@@ -1,0 +1,25 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(shiny)
+
+```
+
+
+
+
+
+```{r}
+runApp("corona", display.mode = "showcase")
+```
+
+
+
+```{r}
+runExample("05_sliders")
+```
+
