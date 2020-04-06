@@ -23,9 +23,9 @@ ui <- fluidPage(
     
     sidebarPanel(
       
-      selectInput("countries", label ="Countries", choices = data2$countriesAndTerritories),
+      selectizeInput("countries", label ="Choose a country", choices = data2$countriesAndTerritories),
       
-      selectInput("countries2", label = "Countries", choices = data2$countriesAndTerritories),
+      selectizeInput("countries2", label = "Choose a country", choices = data2$countriesAndTerritories),
       
       dateRangeInput("date", label = "Date range"),
       
@@ -37,8 +37,6 @@ ui <- fluidPage(
     
     
 
-    
-    
     
     
     mainPanel(
@@ -101,9 +99,10 @@ server <- function(input, output){
   
 
 #TODO:
-# y-Axis ganzzahlig
-#Datenpunkte hinzufügen
-# Datenpunkte für 0 Fälle bei kumulativen Daten entfernen
+#
+#
+#
+  
   
   
   output$mainpanelplot <- renderPlot({
@@ -114,12 +113,16 @@ server <- function(input, output){
       p = p +
         geom_line(data = countrydataCumsum(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
         geom_line(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
+        geom_point(data = countrydataCumsum(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
+        geom_point(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
         ylab("Cumulative number of cases")
     } else {
       p = p +
         geom_line(data = countrydata(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
         geom_line(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
-        ylab("Number of cases") 
+        geom_point(data = countrydata(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
+        geom_point(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
+        ylab("Number of new cases") 
     }
     
     if (input$logarithmicScale){
@@ -132,7 +135,8 @@ server <- function(input, output){
     
     p = p +
       expand_limits(y = 0) +
-      xlab("Date")
+      xlab("Date") +
+      theme_bw()
     
     p
     
