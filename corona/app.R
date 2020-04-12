@@ -6,6 +6,16 @@ library(plyr)
 library(dplyr)
 library(plotly)
 library(scales)
+library(maps)
+library(rworldmap)
+library(sf)
+library(raster)
+library(dplyr)
+library(spData)
+library(leaflet) # for interactive maps
+
+
+
 
 # Source helpers ----
 source("helpers.R")
@@ -40,7 +50,8 @@ ui <- fluidPage(
     
     
     mainPanel(
-   plotOutput("mainpanelplot")       
+   plotOutput("mainpanelplot"),
+   plotOutput("worldmap")
     )
     
     
@@ -97,15 +108,9 @@ server <- function(input, output){
   
   
   
-
-#TODO:
-#
-#
-#
+#Create plot  
   
-  
-  
-  output$mainpanelplot <- renderPlot({
+output$mainpanelplot <- renderPlot({
     
     p = ggplot() 
     
@@ -140,11 +145,66 @@ server <- function(input, output){
     
     p
     
-    
   })  
   
+#Create map
+
+#filter data: input$date
+ dateData <- reactive({data2 %>%
+                          group_by(countriesAndTerritories) %>%
+                           filter(
+                               dateRep >= input$date[1],
+                               dateRep <= input$date[2]
+                                  ) %>%
+                          arrange(dateRep) %>%
+                          mutate(cumsumCases = cumsum(cases)) %>%
+                          filter(cumsumCases == max(cumsumCases)) %>%
+                          ungroup()
+ }) 
+
+ 
+#Create plot
+mapData = reactive({ joinCountryData2Map(dateData(), joinCode = "ISO3", nameJoinColumn = "countryterritoryCode")
+                   })
+
+
+
+output$worldmap <- renderPlot({mapParams<- mapCountryData(mapData(),
+                                           mapTitle = "Number of reported cases",
+                                           nameColumnToPlot="cumsumCases",
+                                           catMethod='logFixedWidth',
+                                           addLegend = FALSE)
+                              
+                               do.call(addMapLegend,
+                                        c(mapParams,
+                                         legendLabels = 'limits',
+                                         legendIntervals = 'data',
+                                         legendWidth = 0.5
+                               ))
+                                 
+                               
+
+
+})
+
+
+
+
+
+
+
+
+
+
+#mapWorld <- borders("world", colour="gray40", fill="gray70")
+
+#output$worldmap <- renderPlot({
+#  ggplot() + mapWorld
+#})
+
 
 }
+
 
 
 
@@ -161,24 +221,3 @@ shinyApp(ui = ui, server = server)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-#Auswahl in Box:
-#selectizeInput("countries","countriesandTerritories", choices = NULL),
-  
-
-#server <- function(input, output, session) {
- # updateSelectizeInput(session, 'countries',
-  #                     choices = data$countriesAndTerritories,
-   #                    server = TRUE)
-#}
