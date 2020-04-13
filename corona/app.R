@@ -13,7 +13,12 @@ library(raster)
 library(dplyr)
 library(spData)
 library(leaflet) # for interactive maps
-
+library(tmap)
+library(raster)
+library(dplyr)
+library(spData)
+library(tmap)
+library(tmaptools)
 
 
 
@@ -51,6 +56,7 @@ ui <- fluidPage(
     
     mainPanel(
    plotOutput("mainpanelplot"),
+#   plotOutput("worldmap"),
    plotOutput("worldmap")
     )
     
@@ -60,14 +66,15 @@ ui <- fluidPage(
 )
 
 # Server logic
+#TODO: Server selectize
 
 server <- function(input, output){
   
+
+
   
-
-
-
-
+  
+  
  
 # filters data (input$countries & input$date)  
   countrydata <- reactive({
@@ -164,43 +171,41 @@ output$mainpanelplot <- renderPlot({
 
  
 #Create plot
-mapData = reactive({ joinCountryData2Map(dateData(), joinCode = "ISO3", nameJoinColumn = "countryterritoryCode")
-                   })
+#mapData = reactive({ joinCountryData2Map(dateData(), joinCode = "ISO3", nameJoinColumn = "countryterritoryCode")
+#                   })
 
 
 
-output$worldmap <- renderPlot({mapParams<- mapCountryData(mapData(),
-                                           mapTitle = "Number of reported cases",
-                                           nameColumnToPlot="cumsumCases",
-                                           catMethod='logFixedWidth',
-                                           addLegend = FALSE)
-                              
-                               do.call(addMapLegend,
-                                        c(mapParams,
-                                         legendLabels = 'limits',
-                                         legendIntervals = 'data',
-                                         legendWidth = 0.5
-                               ))
-                                 
-                               
+# output$worldmap <- renderPlot({mapParams<- mapCountryData(mapData(),
+#                                            mapTitle = "Number of reported cases",
+#                                            nameColumnToPlot="cumsumCases",
+#                                            catMethod='logFixedWidth',
+#                                            addLegend = FALSE)
+#                               
+#                                do.call(addMapLegend,
+#                                         c(mapParams,
+#                                          legendLabels = 'limits',
+#                                          legendIntervals = 'data',
+#                                          legendWidth = 0.5
+#                                ))
+#                                  
+#                                })
 
 
+ 
+ 
+ 
+ #TODO: dateData: nur DateRep und cumsumCases auswählen, Duplikate entfernen. Dann nochmal leaflet testen
+mapData2<- reactive({
+   sp::merge(world, dateData(), by.x ="iso_a2", by.y="geoId")
+ })
+
+
+output$worldmap = renderPlot({
+   tm_shape(mapData2())+tm_polygons(col = "cumsumCases", style =  "log10_pretty")
 })
 
 
-
-
-
-
-
-
-
-
-#mapWorld <- borders("world", colour="gray40", fill="gray70")
-
-#output$worldmap <- renderPlot({
-#  ggplot() + mapWorld
-#})
 
 
 }
