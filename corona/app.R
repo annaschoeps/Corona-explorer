@@ -38,9 +38,9 @@ ui <- fluidPage(
     
     sidebarPanel(
       
-      selectizeInput("countries", label ="Choose a country", choices = data2$countriesAndTerritories),
+      selectizeInput("countries", label ="Choose countries", choices = NULL, selected = NULL, options = list(maxItems = 8)),
       
-      selectizeInput("countries2", label = "Choose a country", choices = data2$countriesAndTerritories),
+   #   selectizeInput("countries2", label = "Choose a country", choices = data2$countriesAndTerritories, selected = NULL, multiple = FALSE, options = list(maxItems = 1)),
       
       dateRangeInput("date", label = "Date range"),
       
@@ -68,31 +68,33 @@ ui <- fluidPage(
 # Server logic
 #TODO: Server selectize
 
-server <- function(input, output){
+server <- function(input, output, session){
   
 
+updateSelectizeInput(session, "countries", choices = data2$countriesAndTerritories, server = TRUE)
+  
+#updateSelectizeInput(session, "countries2", choices = data2$countriesAndTerritories, server = TRUE)  
+  
+  
 
-  
-  
-  
  
 # filters data (input$countries & input$date)  
   countrydata <- reactive({
     filter(data2,
-           countriesAndTerritories == input$countries,
+           countriesAndTerritories %in% input$countries,
            dateRep >= input$date[1],
            dateRep <= input$date[2]
            )
   })
     
   # filters data (input$countries2 & input$date)   
-  countrydata2 <- reactive({
-    filter(data2,
-           countriesAndTerritories == input$countries2,
-           dateRep >= input$date[1],
-           dateRep <= input$date[2]
-    )
-  })
+  # countrydata2 <- reactive({
+  #   filter(data2,
+  #          countriesAndTerritories == input$countries2,
+  #          dateRep >= input$date[1],
+  #          dateRep <= input$date[2]
+  #   )
+  # })
   
   
   
@@ -100,6 +102,7 @@ server <- function(input, output){
 #adds cumulative cases to countrydata
   countrydataCumsum <- reactive({
     countrydata() %>%
+      group_by(countriesAndTerritories) %>%
       arrange(dateRep) %>%
       mutate(cumsumCases = cumsum(cases))
   })
@@ -107,11 +110,11 @@ server <- function(input, output){
  
   
 #adds cumulative cases to countrydata2   
-  countrydataCumsum2 <- reactive({
-    countrydata2() %>%
-      arrange(dateRep) %>%
-      mutate(cumsumCases = cumsum(cases))
-  })
+  # countrydataCumsum2 <- reactive({
+  #   countrydata2() %>%
+  #     arrange(dateRep) %>%
+  #     mutate(cumsumCases = cumsum(cases))
+  # })
   
   
   
@@ -124,16 +127,16 @@ output$mainpanelplot <- renderPlot({
     if (input$cumulative) {
       p = p +
         geom_line(data = countrydataCumsum(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
-        geom_line(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
+#        geom_line(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
         geom_point(data = countrydataCumsum(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
-        geom_point(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
+#        geom_point(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
         ylab("Cumulative number of cases")
     } else {
       p = p +
         geom_line(data = countrydata(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
-        geom_line(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
+#        geom_line(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
         geom_point(data = countrydata(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
-        geom_point(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
+#        geom_point(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
         ylab("Number of new cases") 
     }
     
@@ -148,7 +151,8 @@ output$mainpanelplot <- renderPlot({
     p = p +
       expand_limits(y = 0) +
       xlab("Date") +
-      theme_bw()
+      theme_bw() +
+      scale_color_brewer(type = "qual", palette = "Dark2")
     
     p
     
@@ -171,29 +175,7 @@ output$mainpanelplot <- renderPlot({
 
  
 #Create plot
-#mapData = reactive({ joinCountryData2Map(dateData(), joinCode = "ISO3", nameJoinColumn = "countryterritoryCode")
-#                   })
 
-
-
-# output$worldmap <- renderPlot({mapParams<- mapCountryData(mapData(),
-#                                            mapTitle = "Number of reported cases",
-#                                            nameColumnToPlot="cumsumCases",
-#                                            catMethod='logFixedWidth',
-#                                            addLegend = FALSE)
-#                               
-#                                do.call(addMapLegend,
-#                                         c(mapParams,
-#                                          legendLabels = 'limits',
-#                                          legendIntervals = 'data',
-#                                          legendWidth = 0.5
-#                                ))
-#                                  
-#                                })
-
-
- 
- 
  
  #TODO: dateData: nur DateRep und cumsumCases auswählen, Duplikate entfernen. Dann nochmal leaflet testen
 mapData2<- reactive({
