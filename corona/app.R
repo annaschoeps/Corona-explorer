@@ -31,7 +31,7 @@ source("helpers.R")
 # User interface ----
 ui <- fluidPage(
   
-  titlePanel(""),
+  titlePanel("Reported cases of coronavirus"),
   
   sidebarLayout(
     
@@ -39,8 +39,6 @@ ui <- fluidPage(
     sidebarPanel(
       
       selectizeInput("countries", label ="Choose countries", choices = NULL, selected = NULL, options = list(maxItems = 8)),
-      
-   #   selectizeInput("countries2", label = "Choose a country", choices = data2$countriesAndTerritories, selected = NULL, multiple = FALSE, options = list(maxItems = 1)),
       
       dateRangeInput("date", label = "Date range"),
       
@@ -56,7 +54,6 @@ ui <- fluidPage(
     
     mainPanel(
    plotOutput("mainpanelplot"),
-#   plotOutput("worldmap"),
    plotOutput("worldmap")
     )
     
@@ -66,14 +63,12 @@ ui <- fluidPage(
 )
 
 # Server logic
-#TODO: Server selectize
+
 
 server <- function(input, output, session){
   
 
 updateSelectizeInput(session, "countries", choices = data2$countriesAndTerritories, server = TRUE)
-  
-#updateSelectizeInput(session, "countries2", choices = data2$countriesAndTerritories, server = TRUE)  
   
   
 
@@ -87,17 +82,6 @@ updateSelectizeInput(session, "countries", choices = data2$countriesAndTerritori
            )
   })
     
-  # filters data (input$countries2 & input$date)   
-  # countrydata2 <- reactive({
-  #   filter(data2,
-  #          countriesAndTerritories == input$countries2,
-  #          dateRep >= input$date[1],
-  #          dateRep <= input$date[2]
-  #   )
-  # })
-  
-  
-  
   
 #adds cumulative cases to countrydata
   countrydataCumsum <- reactive({
@@ -107,15 +91,6 @@ updateSelectizeInput(session, "countries", choices = data2$countriesAndTerritori
       mutate(cumsumCases = cumsum(cases))
   })
 
- 
-  
-#adds cumulative cases to countrydata2   
-  # countrydataCumsum2 <- reactive({
-  #   countrydata2() %>%
-  #     arrange(dateRep) %>%
-  #     mutate(cumsumCases = cumsum(cases))
-  # })
-  
   
   
 #Create plot  
@@ -127,16 +102,12 @@ output$mainpanelplot <- renderPlot({
     if (input$cumulative) {
       p = p +
         geom_line(data = countrydataCumsum(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
-#        geom_line(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
         geom_point(data = countrydataCumsum(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
-#        geom_point(data = countrydataCumsum2(), aes(x = dateRep, y = cumsumCases, color = countriesAndTerritories)) +
         ylab("Cumulative number of cases")
     } else {
       p = p +
         geom_line(data = countrydata(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
-#        geom_line(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
         geom_point(data = countrydata(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
-#        geom_point(data = countrydata2(), aes(x = dateRep, y = cases, color = countriesAndTerritories)) +
         ylab("Number of new cases") 
     }
     
@@ -184,14 +155,14 @@ mapData2<- reactive({
 
 
 output$worldmap = renderPlot({
-   tm_shape(mapData2())+tm_polygons(col = "cumsumCases", style =  "log10_pretty")
+   tm_shape(mapData2()) +
+   tm_polygons(col = "cumsumCases", style =  "log10_pretty", title = "Cumulative number of cases")
 })
 
 
 
 
 }
-
 
 
 
