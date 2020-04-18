@@ -31,18 +31,18 @@ source("helpers.R")
 # User interface ----
 ui <- fluidPage(
   
-  titlePanel("Reported cases of coronavirus"),
+  titlePanel("Reported cases of COVID-19"),
   
   sidebarLayout(
     
     
     sidebarPanel(
       
-      selectizeInput("countries", label ="Choose countries", choices = NULL, selected = NULL, options = list(maxItems = 8)),
+      selectizeInput("countries", label ="Choose countries", choices = NULL, options = list(maxItems = 8)),
       
-      dateRangeInput("date", label = "Date range"),
+      dateRangeInput("date", label = "Date range", start = "2020-03-01", end = Sys.Date()),
       
-      checkboxInput("cumulative", label = "Cumulative number of cases"),
+      checkboxInput("cumulative", label = "Cumulative number of cases", value = TRUE),
       
       checkboxInput("logarithmicScale", label = "Logarithmic scale")
    
@@ -68,7 +68,7 @@ ui <- fluidPage(
 server <- function(input, output, session){
   
 
-updateSelectizeInput(session, "countries", choices = data2$countriesAndTerritories, server = TRUE)
+updateSelectizeInput(session, "countries", choices = data2$countriesAndTerritories,selected = c("Germany","Austria"), server = TRUE)
   
   
 
@@ -123,7 +123,8 @@ output$mainpanelplot <- renderPlot({
       expand_limits(y = 0) +
       xlab("Date") +
       theme_bw() +
-      scale_color_brewer(type = "qual", palette = "Dark2")
+      scale_color_brewer(type = "qual", palette = "Dark2") +
+      labs(color = "Countries")
     
     p
     
@@ -156,6 +157,7 @@ mapData2<- reactive({
 
 output$worldmap = renderPlot({
    tm_shape(mapData2()) +
+    tm_borders("grey25") +
    tm_polygons(col = "cumsumCases", style =  "log10_pretty", title = "Cumulative number of cases")
 })
 
