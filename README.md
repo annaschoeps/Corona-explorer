@@ -13,7 +13,7 @@ git clone git@github.com:annaschoeps/Corona-test.git
 ```
 sudo docker build -t annaschoeps/corona .
 ```
-Note: Building the image can 
+Note: Building the image can take a few minutes
 
 
 - Run the docker with:
