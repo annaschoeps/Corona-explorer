@@ -15,9 +15,6 @@ library(spData)
 library(leaflet) # for interactive maps
 library(tmap)
 library(raster)
-library(dplyr)
-library(spData)
-library(tmap)
 library(tmaptools)
 
 
