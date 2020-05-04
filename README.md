@@ -1,4 +1,4 @@
-# Corona-test
+# Corona Explorer
 
 This Shiny app uses data from the European Centre for Disease Prevention and Control to visualize the number of confirmed cases of COVID-19 worldwide.
 
