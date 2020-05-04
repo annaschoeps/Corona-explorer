@@ -12,9 +12,9 @@ This Shiny app uses data from the European Centre for Disease Prevention and Con
 
 ### Run the app
 
-The Corona app is implemented in R using the Shiny Server web application framework. You will need R and Shiny Server installed to run the app.
+The Corona app is implemented in R using the Shiny Server web application framework. All dependencies are packaged in the docker container.
 
-Follow the steps below to run the app on Ubuntu using the Docker file:
+Follow the steps below to run the app using the Docker file:
 
 - Run the docker using the command:
 ```
