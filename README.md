@@ -27,7 +27,7 @@ To build an image from the Dockerfile first (if necessary), use the following co
 
 - Clone the GitHub repository into a newly created directory using the command:
 ```
-git clone git@github.com:annaschoeps/Corona-test.git
+git clone git@github.com:annaschoeps/Corona-explorer.git
 ```
 
 - Build an image from a Dockerfile (-t = tag, . = current directory):
