@@ -1,6 +1,12 @@
 # Corona-test
 
-This Shiny app uses data from the European Centre for Disease Prevention and Control to visualize the number of confirmed cases of SARS-CoV-2 worldwide.
+This Shiny app uses data from the European Centre for Disease Prevention and Control to visualize the number of confirmed cases of COVID-19 worldwide.
+
+![image](https://user-images.githubusercontent.com/43906806/80989865-ceabd500-8e35-11ea-9eb1-ecb9c1c750b5.png)
+
+
+![image](https://user-images.githubusercontent.com/43906806/80989745-a91ecb80-8e35-11ea-8f11-1e17195215c6.png)
+
 
 
 
