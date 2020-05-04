@@ -129,7 +129,8 @@ output$mainpanelplot <- renderPlot({
                           arrange(dateRep) %>%
                           mutate(cumsumCases = cumsum(cases)) %>%
                           filter(cumsumCases == max(cumsumCases)) %>%
-                          ungroup()
+                          ungroup() %>%
+                        mutate(geoId = if_else(geoId == "UK", "GB", geoId  ))
  }) 
 
  
@@ -138,7 +139,7 @@ output$mainpanelplot <- renderPlot({
  
  #TODO: dateData: nur DateRep und cumsumCases auswählen, Duplikate entfernen. Dann nochmal leaflet testen
 mapData2<- reactive({
-   sp::merge(world, dateData(), by.x ="iso_a2", by.y="geoId")
+   sp::merge(world, dateData(), by.x ="iso_a2", by.y="geoId", all.x = TRUE)
  })
 
 
