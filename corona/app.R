@@ -1,20 +1,10 @@
 # Load packages ----
 library(shiny)
-library(ggplot2)
 library(tidyverse)
-library(plyr)
-library(dplyr)
-library(plotly)
 library(scales)
-library(maps)
-library(rworldmap)
-library(sf)
 library(raster)
-library(dplyr)
 library(spData)
-library(leaflet) # for interactive maps
 library(tmap)
-library(raster)
 library(tmaptools)
 
 
