@@ -5,7 +5,7 @@ This Shiny app uses data from the European Centre for Disease Prevention and Con
 ![image](https://user-images.githubusercontent.com/43906806/80989865-ceabd500-8e35-11ea-9eb1-ecb9c1c750b5.png)
 
 
-![image](https://user-images.githubusercontent.com/43906806/80989745-a91ecb80-8e35-11ea-8f11-1e17195215c6.png)
+![image](https://user-images.githubusercontent.com/43906806/80998499-5b10c480-8e43-11ea-9edf-3f9231e814ff.png)
 
 
 
