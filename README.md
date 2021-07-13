@@ -30,7 +30,7 @@ To build an image from the Dockerfile first (if necessary), use the following co
 git clone git@github.com:annaschoeps/Corona-explorer.git
 ```
 
-- Build an image from a Dockerfile (-t = tag, . = current directory):
+- Build an image from a Dockerfile:
 ```
 sudo docker build -t annaschoeps/corona .
 ```
